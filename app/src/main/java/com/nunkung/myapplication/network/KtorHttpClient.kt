@@ -11,6 +11,7 @@ import io.ktor.client.features.logging.Logger
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.observer.ResponseObserver
 import io.ktor.client.request.header
+import io.ktor.client.statement.*
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 
@@ -53,9 +54,23 @@ object KtorHttpClient {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
 
-      HttpResponseValidator {
-            
-      }
+        HttpResponseValidator {
+            validateResponse { response: HttpResponse ->
+                val statusCode = response.status.value
+                println("HTTP status: $statusCode")
+                when (statusCode) {
+                    in 300..399 -> throw RedirectResponseException(response)
+                    in 400..499 -> throw ClientRequestException(response)
+                    in 500..599 -> throw ServerResponseException(response)
+                }
 
+                if (statusCode >= 600) {
+                    throw ResponseException(response)
+                }
+            }
+            handleResponseException { cause: Throwable ->
+                throw cause
+            }
+        }
     }
 }
