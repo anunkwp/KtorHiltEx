@@ -1,6 +1,6 @@
 package com.nunkung.myapplication.network
 
-import com.nunkung.myapplication.model.UserData
+import com.nunkung.myapplication.model.UserPostData
 import io.ktor.client.*
 import io.ktor.client.request.*
 
@@ -9,8 +9,8 @@ import io.ktor.client.request.*
  */
 class UserApi (private val client : HttpClient){
 
-    suspend fun getUserKtor(): MutableList<UserData> = client.get("https://jsonplaceholder.typicode.com/posts")
+    suspend fun getUserKtor(): MutableList<UserPostData> = client.get("https://jsonplaceholder.typicode.com/posts")
 
-    suspend fun getAlbums(): MutableList<UserData> = client.get("https://jsonplaceholder.typicode.com/albums")
+    suspend fun getAlbums(): MutableList<UserPostData> = client.get("https://jsonplaceholder.typicode.com/albums")
 
 }

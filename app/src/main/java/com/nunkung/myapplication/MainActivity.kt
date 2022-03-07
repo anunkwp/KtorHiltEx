@@ -5,22 +5,27 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.nunkung.myapplication.databinding.ActivityMainBinding
-import com.nunkung.myapplication.network.KtorHttpClient
 import com.nunkung.myapplication.network.UserApi
+import com.nunkung.myapplication.viewmodel.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
+import java.util.*
+import javax.inject.Inject
+import kotlin.collections.ArrayList
 
-@SuppressLint("SetTextI18n")
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val binding: ActivityMainBinding by  lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
+    @Inject
+    lateinit var viewModel: MainViewModel
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        val requestClient = KtorHttpClient.ktorHttpClient
-
-        runBlocking {
-            val callUser = UserApi(requestClient).getUserKtor()
-            Log.d("USER-SIZE", callUser.size.toString())
+        viewModel.requestUserPost()
+        viewModel.onObserverUserPost.observe(this@MainActivity) { callUser ->
             binding.apply {
                 callUser[0].let { data ->
                     tvUserId.text = "UserId : ${data.userId}"
@@ -31,4 +36,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 }
+
