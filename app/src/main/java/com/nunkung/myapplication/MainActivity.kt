@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         val requestClient = KtorHttpClient.ktorHttpClient
 
-        //comment test commit
         runBlocking {
             val callUser = UserApi(requestClient).getUserKtor()
             Log.d("USER-SIZE", callUser.size.toString())
